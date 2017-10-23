@@ -3,12 +3,12 @@
 	"version": "1.0.0-SNAPSHOT",
 	"repository": "git@github.com:victorzinho/js-boilerplate",
 	"author": "Víctor González <victor.gonzalez@geomati.co>",
-	"main": "src/main.js",
+	"main": "dist/main.js",
 	"dependencies": {
-		"babel-cli": "^6.26.0",
 		"es-arguments": "^1.0.2"
 	},
 	"devDependencies": {
+		"babel-cli": "^6.26.0",
 		"babel-core": "^6.26.0",
 		"babel-eslint": "^7.2.1",
 		"babel-loader": "^7.1.2",
