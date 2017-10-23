@@ -1,7 +1,7 @@
 {
-	"name": "@victorzinho/gl-loader",
-	"version": "1.0.0-SNAPSHOT",
-	"repository": "git@github.com:victorzinho/js-boilerplate",
+	"name": "@csgis/gb-loader",
+	"version": "0.0.1-alpha.0",
+	"repository": "https://bitbucket.org/csgis/qgis-schulung.git",
 	"author": "Víctor González <victor.gonzalez@geomati.co>",
 	"main": "dist/main.js",
 	"dependencies": {
