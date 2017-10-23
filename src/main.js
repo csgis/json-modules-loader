@@ -1,8 +1,9 @@
 const EXPORT_NAME = 'gl';
 
-let getArguments = require('es-arguments');
+let fs = require('fs');
+let UglifyJS = require('uglify-js');
 
-export function load(app, config, modules) {
+export function load(app, config, modules, moduleDeps) {
   let allPromises = [];
 
   config.forEach(env => {
@@ -23,12 +24,11 @@ export function load(app, config, modules) {
     enabledModules.forEach(name => {
       let callback = modules[name];
       let opts = env[name];
-      let deps;
+      let deps = [];
       if (app.deps && app.deps[name]) {
         deps = app.deps[name];
       } else {
-        // Splice 1 to remove 'opts'
-        deps = getArguments(callback).splice(1);
+        deps = moduleDeps[name];
       }
 
       let modulePromises = deps
@@ -45,14 +45,60 @@ export function load(app, config, modules) {
   return Promise.all(allPromises);
 }
 
+class Visitor {
+  visit(node) {
+    let found = node instanceof UglifyJS.AST_Lambda && node.name.name === 'gl';
+    if (found) this.args = node.argnames.map(a => a.name).splice(1);
+    return found;
+  }
+}
+
+function getModuleDeps(loader, modules) {
+  let names = Object.keys(modules);
+  let visitor = new Visitor();
+  let walker = new UglifyJS.TreeWalker(visitor.visit.bind(visitor));
+  let uglifyOpts = {
+    parse: {},
+    compress: false,
+    mangle: false,
+    output: {
+      ast: true,
+      code: false
+    }
+  };
+
+  let promises = [];
+
+  function createPromise(name) {
+    promises.push(new Promise(function (resolve, reject) {
+      loader.resolve(loader.context, modules[name], function (err, result) {
+        if (err) reject(err);
+
+        let contents = fs.readFileSync(result, 'UTF-8');
+        UglifyJS.minify(contents, uglifyOpts).ast.walk(walker);
+        let obj = {};
+        obj[name] = visitor.args;
+        resolve(obj);
+      });
+    }));
+  }
+
+  names.forEach(createPromise);
+  return Promise.all(promises).then(values => Object.assign({}, ...values));
+}
+
 export default function (source) {
   let modules = JSON.parse(source).modules;
   let names = Object.keys(modules);
   let imports = names.map(n => `import { ${EXPORT_NAME} as ${n} } from '${modules[n]}';`).join('\n');
 
-  return `
-  ${imports}
-  import getArguments from 'es-arguments';
-  ${load.toString()}
-  export default config => load(${source}, config, { ${names.join(',')} });`;
+  let cb = this.async();
+  getModuleDeps(this, modules).then(deps => {
+    cb(null, `
+      ${imports}
+      const DEPS = ${JSON.stringify(deps)};
+      ${load.toString()}
+      export default config => load(${source}, config, { ${names.join(',')} }, DEPS);
+    `);
+  }).catch(err => cb(err));
 }

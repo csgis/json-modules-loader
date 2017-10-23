@@ -5,7 +5,8 @@
 	"author": "Víctor González <victor.gonzalez@geomati.co>",
 	"main": "dist/main.js",
 	"dependencies": {
-		"es-arguments": "^1.0.2"
+		"es-arguments": "^1.0.2",
+		"uglify-js": "^3.1.5"
 	},
 	"devDependencies": {
 		"babel-cli": "^6.26.0",
