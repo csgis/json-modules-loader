@@ -27,7 +27,8 @@ export function load(app, config, modules) {
       if (app.deps && app.deps[name]) {
         deps = app.deps[name];
       } else {
-        [, ...deps] = getArguments(callback);
+        // Splice 1 to remove 'opts'
+        deps = getArguments(callback).splice(1);
       }
 
       let modulePromises = deps
@@ -35,7 +36,8 @@ export function load(app, config, modules) {
         .filter(p => p instanceof Promise);
 
       Promise.all(modulePromises).then(values => {
-        resolves[name](callback(opts, ...values));
+        values.unshift(opts);
+        resolves[name](callback.apply(null, values));
       });
     });
   });
@@ -50,7 +52,7 @@ export default function (source) {
 
   return `
   ${imports}
-  ${getArguments.toString()}
+  import getArguments from 'es-arguments';
   ${load.toString()}
   export default config => load(${source}, config, { ${names.join(',')} });`;
 }
