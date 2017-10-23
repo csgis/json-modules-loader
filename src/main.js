@@ -28,7 +28,7 @@ export function load(app, config, modules, moduleDeps) {
       if (app.deps && app.deps[name]) {
         deps = app.deps[name];
       } else {
-        deps = moduleDeps[name];
+        deps = moduleDeps[name] || [];
       }
 
       let modulePromises = deps
