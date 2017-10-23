@@ -21,6 +21,7 @@
 		"nyc": "^11.2.1"
 	},
 	"scripts": {
+		"install": "npm run build",
 		"build": "babel src --out-dir dist",
 		"test": "nyc -r html -r text mocha --compilers js:babel-register",
 		"lint": "eslint src test",
