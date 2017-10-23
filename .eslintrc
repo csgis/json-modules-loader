@@ -4,6 +4,7 @@
 		"func-names": 0
 	},
 	"env": {
-		"jasmine": true
+		"mocha": true,
+		"es6": true
 	}
 }
