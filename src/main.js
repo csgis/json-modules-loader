@@ -47,7 +47,7 @@ export function load(app, config, modules, moduleDeps) {
 
 class Visitor {
   visit(node) {
-    let found = node instanceof UglifyJS.AST_Lambda && node.name.name === 'gl';
+    let found = node instanceof UglifyJS.AST_Lambda && node.name && node.name.name === 'gl';
     if (found) this.args = node.argnames.map(a => a.name).splice(1);
     return found;
   }

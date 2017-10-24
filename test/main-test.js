@@ -109,4 +109,14 @@ describe('module', function () {
     let test = () => assert(!config.map.ten);
     load(app, [config], { map, layers }, app.deps).then(test).then(done, done);
   });
+
+  it('ignores unnamed functions', function (done) {
+    stubRead('module.exports = function(opts, dependency){}');
+    cb = function (e, ret) {
+      assert(ret.match(/const DEPS = {};/));
+      done();
+    };
+
+    loader.call(context, JSON.stringify(SOURCE));
+  });
 });
