@@ -6,7 +6,7 @@ let UglifyJS = require('uglify-js');
 export function load(app, config, modules, moduleDeps) {
   let allPromises = [];
 
-  config.forEach(env => {
+  function process(env) {
     let promises = {};
     let resolves = {};
 
@@ -40,7 +40,15 @@ export function load(app, config, modules, moduleDeps) {
         resolves[name](callback.apply(null, values));
       });
     });
-  });
+  }
+
+  if (config instanceof Array) {
+    config.forEach(process);
+  } else if (config instanceof Object) {
+    process(config);
+  } else {
+    throw new Error(`Invalid config: ${config}`);
+  }
 
   return Promise.all(allPromises);
 }

@@ -119,4 +119,21 @@ describe('module', function () {
 
     loader.call(context, JSON.stringify(SOURCE));
   });
+
+  it('uses config as object', function (done) {
+    let config = {
+      map: { boo: 2 }
+    };
+    let test = () => assert.equal(10, config.map.ten);
+    load(app, config, { map, layers }, app.deps).then(test).then(done, done);
+  });
+
+  it('throws error on invalid config', function () {
+    try {
+      load(app, 'invalid_config', { map, layers }, app.deps);
+      assert.fail();
+    } catch (e) {
+      // ignore
+    }
+  });
 });
