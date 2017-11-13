@@ -1,7 +1,7 @@
 {
-	"name": "@csgis/gb-loader",
+	"name": "@csgis/bricjs-loader",
 	"version": "0.0.1-alpha.0",
-	"repository": "https://bitbucket.org/csgis/gb-loader.git",
+	"repository": "git@github.com:csgis/bricjs-loader.git",
 	"author": "Víctor González <victor.gonzalez@geomati.co>",
 	"main": "dist/main.js",
 	"dependencies": {

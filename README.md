@@ -1,1 +1,1 @@
-# Geobricks JS loader
+# Bricjs loader
