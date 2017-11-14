@@ -1,8 +1,10 @@
-[![Build Status](https://travis-ci.org/csgis/bricjs-loader.svg?branch=master)](https://travis-ci.org/csgis/bricjs-loader) [![codecov](https://codecov.io/gh/csgis/bricjs-loader/branch/master/graph/badge.svg)](https://codecov.io/gh/csgis/bricjs-loader)
+[![Build Status](https://travis-ci.org/csgis/bricjs-loader.svg?branch=master)](https://travis-ci.org/csgis/bricjs-loader) [![codecov](https://codecov.io/gh/csgis/bricjs-loader/branch/master/graph/badge.svg)](https://codecov.io/gh/csgis/bricjs-loader) [![npm](https://img.shields.io/npm/v/@csgis/bricjs-loader.svg)](https://www.npmjs.com/package/@csgis/bricjs-loader) [![downloads](https://img.shields.io/npm/dt/@csgis/bricjs-loader.svg)](https://www.npmjs.com/package/@csgis/bricjs-loader)
 
 # BricJS loader
 
-BricJS is a Webpack loader to integrate reusable modules in an application. Some restrictions must be taken into account when creating both reusable modules and applications.
+BricJS is a Webpack loader to integrate reusable modules in an application.
+
+Some restrictions must be taken into account when creating both reusable modules and applications.
 
 ## Modules
 
