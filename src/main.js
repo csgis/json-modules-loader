@@ -1,7 +1,16 @@
-const EXPORT_NAME = 'gl';
-
 let fs = require('fs');
 let UglifyJS = require('uglify-js');
+
+const EXPORT_NAME = 'bricjs';
+const UGLIFY_OPTS = {
+  parse: {},
+  compress: false,
+  mangle: false,
+  output: {
+    ast: true,
+    code: false
+  }
+};
 
 export function load(app, config, modules, moduleDeps) {
   let allPromises = [];
@@ -55,43 +64,34 @@ export function load(app, config, modules, moduleDeps) {
 
 class Visitor {
   visit(node) {
-    let found = node instanceof UglifyJS.AST_Lambda && node.name && node.name.name === 'gl';
+    let found = node instanceof UglifyJS.AST_Lambda &&
+      node.name &&
+      node.name.name === EXPORT_NAME;
     if (found) this.args = node.argnames.map(a => a.name).splice(1);
     return found;
   }
 }
 
 function getModuleDeps(loader, modules) {
-  let names = Object.keys(modules);
   let visitor = new Visitor();
   let walker = new UglifyJS.TreeWalker(visitor.visit.bind(visitor));
-  let uglifyOpts = {
-    parse: {},
-    compress: false,
-    mangle: false,
-    output: {
-      ast: true,
-      code: false
-    }
-  };
-
   let promises = [];
 
-  function createPromise(name) {
-    promises.push(new Promise(function (resolve, reject) {
+  Object.keys(modules).forEach(function (name) {
+    let promise = new Promise(function (resolve, reject) {
       loader.resolve(loader.context, modules[name], function (err, result) {
         if (err) reject(err);
 
         let contents = fs.readFileSync(result, 'UTF-8');
-        UglifyJS.minify(contents, uglifyOpts).ast.walk(walker);
-        let obj = {};
-        obj[name] = visitor.args;
-        resolve(obj);
+        UglifyJS.minify(contents, UGLIFY_OPTS).ast.walk(walker);
+        resolve({
+          [name]: visitor.args
+        });
       });
-    }));
-  }
+    });
+    promises.push(promise);
+  });
 
-  names.forEach(createPromise);
   return Promise.all(promises).then(values => Object.assign({}, ...values));
 }
 
@@ -100,13 +100,14 @@ export default function (source) {
   let names = Object.keys(modules);
   let imports = names.map(n => `import { ${EXPORT_NAME} as ${n} } from '${modules[n]}';`).join('\n');
 
-  let cb = this.async();
-  getModuleDeps(this, modules).then(deps => {
-    cb(null, `
-      ${imports}
-      const DEPS = ${JSON.stringify(deps)};
-      ${load.toString()}
-      export default config => load(${source}, config, { ${names.join(',')} }, DEPS);
-    `);
-  }).catch(err => cb(err));
+  let callback = this.async();
+  let code = deps => `
+${imports}
+const DEPS = ${JSON.stringify(deps)};
+${load.toString()}
+export default config => load(${source}, config, { ${names.join(',')} }, DEPS);`;
+
+  getModuleDeps(this, modules)
+    .then(deps => callback(null, code(deps)))
+    .catch(err => callback(err));
 }

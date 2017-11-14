@@ -41,10 +41,10 @@ describe('module', function () {
   }
 
   it('imports modules', function (done) {
-    stubRead('module.exports = function gl(opts, a){}');
+    stubRead('module.exports = function bricjs(opts, a){}');
     cb = function (e, ret) {
-      assert(ret.match(/import { gl as map } from '.\/map'/));
-      assert(ret.match(/import { gl as layers } from 'layers-dependency'/));
+      assert(ret.match(/import { bricjs as map } from '.\/map'/));
+      assert(ret.match(/import { bricjs as layers } from 'layers-dependency'/));
       done();
     };
 
@@ -52,7 +52,7 @@ describe('module', function () {
   });
 
   it('adds load function', function (done) {
-    stubRead('module.exports = function gl(opts, a){}');
+    stubRead('module.exports = function bricjs(opts, a){}');
     cb = function (e, ret) {
       assert(ret.match(/function\s*load\s*\(.*\)/));
       done();
@@ -62,7 +62,7 @@ describe('module', function () {
   });
 
   it('exports function', function (done) {
-    stubRead('module.exports = function gl(opts, a){}');
+    stubRead('module.exports = function bricjs(opts, a){}');
     cb = function (e, ret) {
       assert(ret.match(/export default config => load\(.*, config, { map,layers }, DEPS\);/));
       done();
@@ -72,7 +72,7 @@ describe('module', function () {
   });
 
   it('exports DEPS', function (done) {
-    stubRead('module.exports = function gl(opts, dependency){}');
+    stubRead('module.exports = function bricjs(opts, dependency){}');
     cb = function (e, ret) {
       assert(ret.match(/const DEPS = {"map":\["dependency"\],"layers":\["dependency"\]};/));
       done();
