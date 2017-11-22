@@ -17,7 +17,7 @@ npm install --save-dev @csgis/json-modules-loader
 With yarn:
 
 ```
-yarn -D @csgis/json-modules-loader
+yarn add -D @csgis/json-modules-loader
 ```
 
 ## Usage
@@ -27,7 +27,7 @@ yarn -D @csgis/json-modules-loader
 ```js
 {
    test: /app\.json$/,
-   use: [ 'json-module-loader' ]
+   use: [ '@csgis/json-modules-loader' ]
 }
 ```
 
@@ -45,14 +45,15 @@ yarn -D @csgis/json-modules-loader
 ```js
 import app from './app.json';
 
-app.y.render(
-  x.createElement(Hello, {toWhat: 'World'}, null),
+app.modules.y.render(
+  app.modules.x.createElement(Hello, {toWhat: 'World'}, null),
   document.getElementById('root')
 );
 ```
 
 ## Options
 
-| Name | Type          | Default   | Description |
-|------|---------------|-----------|-------------|
-| key  | `{ String } ` | `modules` | Name of the property JSON property with paths to be resolved. |
+| Name        | Type          | Default   | Description |
+|-------------|---------------|-----------|-------------|
+| key         | `{ String } ` | `modules` | Name of the property JSON property with paths to be resolved. |
+| importName  | `{ String } ` | `default` | Name of the export to use as module value. |
