@@ -23,5 +23,8 @@
 		"test": "nyc -r html -r text mocha --compilers js:babel-register",
 		"lint": "eslint src test",
 		"coverage": "nyc report --reporter=text-lcov > coverage.lcov && codecov --disable=gcov"
+	},
+	"dependencies": {
+		"loader-utils": "^1.1.0"
 	}
 }
