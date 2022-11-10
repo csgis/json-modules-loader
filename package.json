@@ -25,6 +25,6 @@
 		"coverage": "nyc report --reporter=text-lcov > coverage.lcov && codecov --disable=gcov"
 	},
 	"dependencies": {
-		"loader-utils": "^1.1.0"
+		"loader-utils": "^1.4.1"
 	}
 }
